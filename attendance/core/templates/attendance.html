@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş ve Çıkış</title>
+    <script>
+        async function handleAttendance(action) {
+            const url = action === 'check-in' ? '/api/check-in/' : '/api/check-out/';
+            const response = await fetch(url, { method: 'POST' });
+            const result = await response.json();
+            alert(result.message || result.error);
+        }
+    </script>
+</head>
+<body>
+    <h1>Giriş ve Çıkış</h1>
+    <button onclick="handleAttendance('check-in')">Giriş Yap</button>
+    <button onclick="handleAttendance('check-out')">Çıkış Yap</button>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Personel Paneli</title>
+</head>
+<body>
+    <h2>Merhaba {{ employee.user.username }}</h2>
+    <p>Kalan Yıllık İzin: {{ employee.annual_leave }} gün</p>
+    <h3>Geçmiş Giriş/Çıkışlar:</h3>
+    <ul>
+        {% for attendance in attendances %}
+            <li>{{ attendance.date }} - Giriş: {{ attendance.check_in }} - Çıkış: {{ attendance.check_out }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>İzin Talepleriniz:</h3>
+    <ul>
+        {% for leave in leave_requests %}
+            <li>{{ leave.start_date }} - {{ leave.end_date }} ({{ leave.total_leave_days }} gün) - Durum: 
+                {% if leave.is_approved %}
+                    Onaylandı
+                {% elif leave.is_rejected %}
+                    Reddedildi
+                {% else %}
+                    Beklemede
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <h3>İzin Talebi Oluştur</h3>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Talep Gönder</button>
+    </form>
+    
+    
+</body>
+</html>

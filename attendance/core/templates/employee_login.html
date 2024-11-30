@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Login</title>
+</head>
+<body>
+    <h2>Personel Girişi</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Kullanıcı Adı">
+        <input type="password" name="password" placeholder="Şifre">
+        <button type="submit">Giriş Yap</button>
+    </form>
+    {% for message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+</body>
+</html>

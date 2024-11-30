@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İzin Raporu</title>
+    <script>
+        async function loadLeaveReport() {
+            const response = await fetch('/api/leave-report/');
+            const data = await response.json();
+            const table = document.getElementById('report-table');
+            data.forEach(employee => {
+                const row = table.insertRow();
+                row.innerHTML = `
+                    <td>${employee.user}</td>
+                    <td>${employee.annual_leave}</td>
+                    <td>${employee.used_leave}</td>
+                `;
+            });
+        }
+
+        window.onload = loadLeaveReport;
+    </script>
+</head>
+<body>
+    <h1>İzin Raporu</h1>
+    <table id="report-table" border="1">
+        <tr>
+            <th>Personel</th>
+            <th>Kalan İzin</th>
+            <th>Kullanılan İzin</th>
+        </tr>
+    </table>
+</body>
+</html>

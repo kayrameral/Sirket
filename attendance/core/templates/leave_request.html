@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İzin Talebi</title>
+    <script>
+        async function submitLeaveRequest() {
+            const startDate = document.getElementById('start_date').value;
+            const endDate = document.getElementById('end_date').value;
+            const response = await fetch('/api/leave-requests/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ start_date: startDate, end_date: endDate })
+            });
+            const result = await response.json();
+            alert(result.message || result.error);
+        }
+    </script>
+</head>
+<body>
+    <h1>İzin Talebi Oluştur</h1>
+    <label>Başlangıç Tarihi:</label>
+    <input type="date" id="start_date"><br>
+    <label>Bitiş Tarihi:</label>
+    <input type="date" id="end_date"><br>
+    <button onclick="submitLeaveRequest()">İzin Talebi Gönder</button>
+</body>
+</html>

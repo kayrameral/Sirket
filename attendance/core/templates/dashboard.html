@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <button id="check-in-btn">Check In</button>
+    <button id="check-out-btn">Check Out</button>
+    <button id="leave-report-btn">Leave Report</button>
+
+    <div id="leave-report"></div>
+
+    <script>
+        document.getElementById('check-in-btn').addEventListener('click', function() {
+            fetch('/api/check-in/', {
+                method: 'POST',
+                headers: {'Authorization': 'Bearer ' + token},
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.log(error));
+        });
+
+        document.getElementById('check-out-btn').addEventListener('click', function() {
+            fetch('/api/check-out/', {
+                method: 'POST',
+                headers: {'Authorization': 'Bearer ' + token},
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.log(error));
+        });
+
+        document.getElementById('leave-report-btn').addEventListener('click', function() {
+            fetch('/api/leave-report/', {
+                method: 'GET',
+                headers: {'Authorization': 'Bearer ' + token},
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('leave-report').innerText = JSON.stringify(data, null, 2);
+            })
+            .catch(error => console.log(error));
+        });
+    </script>
+</body>
+</html>

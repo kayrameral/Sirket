@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aylık Çalışma Saati Raporu</title>
+    <script>
+        async function loadMonthlyReport() {
+            const response = await fetch('/api/monthly-report/');
+            const data = await response.json();
+            const table = document.getElementById('report-table');
+            data.forEach(report => {
+                const row = table.insertRow();
+                row.innerHTML = `
+                    <td>${report.username}</td>
+                    <td>${report.total_work_hours}</td>
+                    <td>${report.remaining_leave}</td>
+                `;
+            });
+        }
+
+        window.onload = loadMonthlyReport;
+    </script>
+</head>
+<body>
+    <h1>Aylık Çalışma Saati Raporu</h1>
+    <table id="report-table" border="1">
+        <tr>
+            <th>Personel</th>
+            <th>Toplam Çalışma Saatleri</th>
+            <th>Kalan İzin Günleri</th>
+        </tr>
+    </table>
+</body>
+</html>

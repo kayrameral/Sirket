@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İzin Onayı</title>
+    <script>
+        async function loadLeaveRequests() {
+            const response = await fetch('/api/leave-requests/');
+            const data = await response.json();
+            const table = document.getElementById('leave-table');
+            data.forEach(request => {
+                const row = table.insertRow();
+                row.innerHTML = `
+                    <td>${request.employee}</td>
+                    <td>${request.start_date}</td>
+                    <td>${request.end_date}</td>
+                    <td>${request.total_leave_days}</td>
+                    <td><button onclick="approveLeave(${request.id})">Onayla</button></td>
+                `;
+            });
+        }
+
+        async function approveLeave(leaveId) {
+            const response = await fetch(`/api/approve-leave/${leaveId}/`, { method: 'POST' });
+            const result = await response.json();
+            alert(result.message || result.error);
+        }
+
+        window.onload = loadLeaveRequests;
+    </script>
+</head>
+<body>
+    <h1>İzin Talepleri</h1>
+    <table id="leave-table" border="1">
+        <tr>
+            <th>Personel</th>
+            <th>Başlangıç</th>
+            <th>Bitiş</th>
+            <th>Toplam Gün</th>
+            <th>İşlem</th>
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yıllık İzin</title>
+    <script>
+        async function loadLeave() {
+            const response = await fetch('/api/annual-leave/');
+            const data = await response.json();
+            document.getElementById('leave-info').innerText = 
+                `Kalan İzin: ${data.annual_leave} gün, Kullanılan: ${data.used_leave} gün`;
+        }
+        window.onload = loadLeave;
+    </script>
+</head>
+<body>
+    <h1>Yıllık İzin</h1>
+    <p id="leave-info">Yükleniyor...</p>
+</body>
+</html>

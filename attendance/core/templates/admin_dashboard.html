@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Yetkili Paneli</title>
+</head>
+<body>
+    <h2>Yetkili Paneli</h2>
+
+    <!-- Personel Listesi -->
+    <h3>Personel Listesi:</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Personel Adı</th>
+                <th>Kalan İzin (gün)</th>
+                <th>Bu Ayki Çalışma Saatleri</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in employee_monthly_hours %}
+                <tr>
+                    <td>{{ data.employee.user.username }}</td>
+                    <td>{{ data.employee.annual_leave }}</td>
+                    <td>{{ data.monthly_hours|floatformat:2 }} saat</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h2>İzin Talebini Onayla ya da Reddet</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for leave in leave_requests %}
+                <tr>
+                    <td>{{ leave.employee.user.first_name }} {{ leave.employee.user.last_name }}</td>
+                    <td>{{ leave.start_date }}</td>
+                    <td>{{ leave.end_date }}</td>
+                    <td>
+                        {% if leave.is_approved %}
+                            Approved
+                        {% elif leave.is_rejected %}
+                            Rejected
+                        {% else %}
+                            Pending
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'approve_leave' leave.id %}">Approve</a>
+                        <a href="{% url 'reject_leave' leave.id %}">Reject</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Personele İzin Verme</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="employee">Select Employee:</label>
+        <select name="employee" id="employee" required>
+            {% for employee in employees %}
+                <option value="{{ employee.id }}">{{ employee.user.first_name }} {{ employee.user.last_name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        {{ form.as_p }}
+        <button type="submit">Assign Leave</button>
+    </form>
+    <!-- Geç Kalan Çalışanlar -->
+    <h3>Geç Kalan Çalışanlar:</h3>
+    <ul>
+        {% for attendance in attendances %}
+            {% if attendance.is_late %}
+                <li>{{ attendance.employee.user.username }} - {{ attendance.date }} - 
+                Giriş: {{ attendance.check_in }} - Geç Kalma Süresi: {{ attendance.late_minutes }} dakika</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <!-- Bekleyen İzin Talepleri -->
+    <h3>Bekleyen İzin Talepleri:</h3>
+    <ul>
+        {% for leave in pending_requests %}
+            <li>{{ leave.employee.user.username }}: {{ leave.start_date }} - {{ leave.end_date }}
+                ({{ leave.total_leave_days }} gün)
+                <a href="{% url 'approve_leave' leave.id %}">Onayla</a> |
+                <a href="{% url 'reject_leave' leave.id %}">Reddet</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Bildirimler -->
+    <h3>Bildirimler:</h3>
+    <div id="notifications"></div> <!-- Bildirimlerin burada görüntülenmesini sağlıyor -->
+
+    <script>
+        function loadNotifications() {
+            fetch('/api/notifications/')
+                .then(response => response.json())
+                .then(data => {
+                    const notificationDiv = document.getElementById('notifications');
+                    notificationDiv.innerHTML = ''; // Önceki bildirimleri temizle
+                    data.notifications.forEach(notification => {
+                        const notifElement = document.createElement('p');
+                        notifElement.textContent = notification.message;
+                        notificationDiv.appendChild(notifElement);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Sayfa yüklendiğinde bildirimleri yükle
+        window.onload = loadNotifications;
+    </script>
+
+</body>
+</html>
